@@ -40,6 +40,8 @@ def manage_disk_actions():
         files = manage_disk_actions()
         return files
 
+
+
 def manage_drive_actions():
     """This function manages the google drive selection it works with
     2 cases
@@ -72,12 +74,12 @@ def manage_uploads():
     of the google drive specified folder, compares its files and uploads the new files, or updates
     the files that exist but that needs to be modified"""
     upload_count = 0
+    local_files = manage_disk_actions()
+    drive_files = manage_drive_actions()
     csv_file = file_actions.read_csv()
     disk = csv_file['disk']
     folder_id = csv_file['id']
     folder_name = csv_file['folder_name']
-    local_files = manage_disk_actions()
-    drive_files = manage_drive_actions()
     drive_file_names = [list(x.keys())[0] for x in drive_files if drive_files != []]
     for file in local_files:
         dir_path = ''
