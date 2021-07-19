@@ -2,6 +2,7 @@ import win32api
 import csv
 import os
 import shutil
+import pathlib
 
 def read_csv():
     """Reads the default csv file called 'defaults.csv'.
@@ -49,8 +50,11 @@ def get_disk_files(disk):
     inside of it"""
     path = '{}:'.format(disk)
     files = os.listdir(path)
+    not_important = ['$RECYCLE.BIN','System Volume Information']
+    for f in not_important:
+        if f in files:
+            files.remove(f)
     return files
-
 
 def get_disk_name(disks):
     """Receives a list of the actual disks
@@ -70,8 +74,11 @@ def zip_file(name):
     """This function creates a new ziped file
     with the same name of file to be ziped"""
     disk = read_csv()['disk']
+    current_disk = pathlib.Path.home().drive
     path = os.path.join(disk + ':', name)
-    shutil.make_archive(name, 'zip', path)
+    shutil.make_archive(current_disk + name, 'zip', path)
     path = path + '.zip'
+    shutil.copy(name + '.zip',disk + ':')
+    os.remove(current_disk + name + '.zip')
     return path
 

@@ -1,22 +1,29 @@
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
+import os
+
 
 def login():
     """This function needs the credentials_module.json file created
     as the module pydrive states or as needed, in this case what we did
     with the file is to keep us loged in. The function will then ask for 
     google drive credentials, if the credentials were given it returns them."""
-    credentials_file = 'credentials_module.json'
-    GoogleAuth.DEFAULT_SETTINGS['client_config_file'] = credentials_file
-    gauth = GoogleAuth()
-    gauth.LoadCredentialsFile(credentials_file)
-    if gauth.access_token_expired:
-        gauth.Refresh()
+    if os.path.exists('credentials_module.json'):
+        credentials_file = 'credentials_module.json'
+        GoogleAuth.DEFAULT_SETTINGS['client_config_file'] = credentials_file
+        gauth = GoogleAuth()
+        gauth.LoadCredentialsFile(credentials_file)
+        if gauth.access_token_expired:
+            gauth.Refresh()
+        else:
+            gauth.Authorize()
+        gauth.SaveCredentialsFile(credentials_file)
+        credentials = GoogleDrive(gauth)
+        return credentials
     else:
-        gauth.Authorize()
-    gauth.SaveCredentialsFile(credentials_file)
-    credentials = GoogleDrive(gauth)
-    return credentials
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()
+        return login()
 
 def folder_creation(name):
     """This function assumes name, the parameter, as a string and creates a file with the
@@ -45,8 +52,6 @@ def get_children_files(id):
     for file in file_list:
         result.append({file['title']: file['id'], 'modified_date': file['modifiedDate']})
     return result
-
-#print(list(get_children_files('1nOekW95qI6CU7Cu0G9BMYyYks-ajNkup')[0].keys())[0][:-4])
 
 def upload_in_folder(id, path):
     """Receives the id of the google drive folder and the local file path to upload

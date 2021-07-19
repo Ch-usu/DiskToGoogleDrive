@@ -40,8 +40,6 @@ def manage_disk_actions():
         files = manage_disk_actions()
         return files
 
-
-
 def manage_drive_actions():
     """This function manages the google drive selection it works with
     2 cases
@@ -83,7 +81,7 @@ def manage_uploads():
     drive_file_names = [list(x.keys())[0] for x in drive_files if drive_files != []]
     for file in local_files:
         dir_path = ''
-        path = os.path.join(disk + ':', file)
+        path = os.path.join(disk + ':/', file)
         filetime = parse(time.ctime(os.path.getmtime(path)))
         utcfiletime = filetime.replace(tzinfo = timezone('UTC'))
         if os.path.isdir(path):
@@ -92,7 +90,7 @@ def manage_uploads():
         if path in drive_file_names:
             drive_file = [x for x in drive_files if path in list(x.keys())][0]
             drive_file_time = parse(drive_file['modified_date'])
-            #the 14400 is due to the time difference between bolivia and the location the 
+            #the 14400 is due to the time difference between bolivia and the location of the 
             #data in googledrive
             if utcfiletime.timestamp() + 14400 > drive_file_time.timestamp() :
                 google_actions.upload_in_folder(folder_id,path)
@@ -109,7 +107,6 @@ def manage_uploads():
             if os.path.isdir(dir_path):
                 os.remove(path)
     print('{} files have been uploaded to {} folder'.format(upload_count, folder_name))
-
 
 if __name__ == "__main__":
     manage_uploads()
