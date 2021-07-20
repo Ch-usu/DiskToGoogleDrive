@@ -84,3 +84,11 @@ def zip_file(name):
     os.chdir(current_dir)
     return path + '.zip'
 
+def file_limitter(path):
+    """This fuinction receives the path of folder or file to measures it size as a string, and returns
+    the size as an int"""
+    if os.path.isdir(path):
+        size = sum(os.path.getsize(os.path.join(path,f)) for f in os.listdir(path))
+    else: 
+        size = os.path.getsize(path)
+    return size

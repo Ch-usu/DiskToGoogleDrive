@@ -82,6 +82,8 @@ def manage_uploads():
     for file in local_files:
         dir_path = ''
         path = os.path.join(disk + ':/', file)
+        if file_actions.file_limitter(path) > 1073741824:
+            continue
         filetime = parse(time.ctime(os.path.getmtime(path)))
         utcfiletime = filetime.replace(tzinfo = timezone('UTC'))
         if os.path.isdir(path):
