@@ -74,11 +74,13 @@ def zip_file(name):
     """This function creates a new ziped file
     with the same name of file to be ziped"""
     disk = read_csv()['disk']
-    current_disk = pathlib.Path.home().drive
     path = os.path.join(disk + ':', name)
-    shutil.make_archive(current_disk + name, 'zip', path)
-    path = path + '.zip'
-    shutil.copy(name + '.zip',disk + ':')
-    os.remove(current_disk + name + '.zip')
-    return path
+    current_dir = os.getcwd()
+    os.chdir(disk + ':')
+    try:    
+        shutil.make_archive(path,'zip',path)
+    except OSError as err:
+        print(err)
+    os.chdir(current_dir)
+    return path + '.zip'
 
