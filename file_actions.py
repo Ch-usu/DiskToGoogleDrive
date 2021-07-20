@@ -85,10 +85,15 @@ def zip_file(name):
     return path + '.zip'
 
 def file_limitter(path):
-    """This fuinction receives the path of folder or file to measures it size as a string, and returns
-    the size as an int"""
+    """This function receives a path as a string or raw string and returns the size of the entire file,
+    itterating and summing files through recursion"""
+    size_sum = 0 
     if os.path.isdir(path):
-        size = sum(os.path.getsize(os.path.join(path,f)) for f in os.listdir(path))
-    else: 
+        for f in os.listdir(path):
+            size = file_limitter(os.path.join(path, f))
+            size_sum += size
+        return size_sum
+    else:
         size = os.path.getsize(path)
-    return size
+        return size
+
